@@ -16,8 +16,11 @@ namespace SantaSystem.Web
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-            //Configure AutoFac  
+            // Configure AutoFac  
             AutofacWebapiConfig.Initialize(GlobalConfiguration.Configuration);
+
+            // Configure Automapper
+            AutomapperConfig.ConfigureMappings();
         }
     }
 }

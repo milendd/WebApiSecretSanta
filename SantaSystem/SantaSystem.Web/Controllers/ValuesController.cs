@@ -1,10 +1,8 @@
-﻿using SantaSystem.Data.Repositories;
+﻿using AutoMapper.QueryableExtensions;
+using SantaSystem.Data.Repositories;
 using SantaSystem.Models.DomainModels;
-using System;
+using SantaSystem.Models.DTOs;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 
 namespace SantaSystem.Web.Controllers
@@ -20,9 +18,11 @@ namespace SantaSystem.Web.Controllers
         }
 
         // GET api/values
-        public IEnumerable<string> Get()
+        public IEnumerable<UserDTO> Get()
         {
-            return new string[] { "value1", "value2" };
+            var users = this.userRepository.GetAll().ProjectTo<UserDTO>();
+            return users;
+            //return new string[] { "value1", "value2" };
         }
 
         // GET api/values/5
