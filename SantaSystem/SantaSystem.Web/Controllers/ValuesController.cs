@@ -7,7 +7,6 @@ using System.Web.Http;
 
 namespace SantaSystem.Web.Controllers
 {
-    //[Authorize]
     public class ValuesController : ApiController
     {
         private readonly IGenericRepository<User> userRepository;
@@ -18,11 +17,9 @@ namespace SantaSystem.Web.Controllers
         }
 
         // GET api/values
-        public IEnumerable<UserDTO> Get()
+        public IEnumerable<string> Get()
         {
-            var users = this.userRepository.GetAll().ProjectTo<UserDTO>();
-            return users;
-            //return new string[] { "value1", "value2" };
+            return new string[] { "value1", "value2" };
         }
 
         // GET api/values/5

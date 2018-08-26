@@ -7,6 +7,8 @@ namespace SantaSystem.Models.DomainModels
 {
     public class User : IdentityUser
     {
+        public string DisplayName { get; set; }
+
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User> manager, string authenticationType)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
