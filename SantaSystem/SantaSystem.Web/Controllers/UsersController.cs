@@ -25,8 +25,7 @@ namespace SantaSystem.Web.Controllers
         {
             if (pageNumber < 1)
             {
-                ModelState.AddModelError("", "PageNumber must be positive");
-                return BadRequest(ModelState);
+                return BadRequest("PageNumber must be positive");
             }
 
             var users = this.userRepository.GetAll().ProjectTo<UserDTO>();
@@ -50,6 +49,24 @@ namespace SantaSystem.Web.Controllers
             users = users.Skip(skip).Take(Globals.UsersPageSize);
 
             return Ok(users);
+        }
+
+        [Route(nameof(FindUser))]
+        public IHttpActionResult FindUser(string username)
+        {
+            if (!string.IsNullOrEmpty(username))
+            {
+                return BadRequest("Username is required");
+            }
+
+            var user = this.userRepository.GetAll().FirstOrDefault(x => x.UserName == username);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using SantaSystem.Models.DomainModels;
 using SantaSystem.Models.DTOs;
+using SantaSystem.Web.Models.Groups;
 
 namespace SantaSystem.Web.Utils
 {
@@ -10,7 +11,9 @@ namespace SantaSystem.Web.Utils
         {
             Mapper.Initialize(config =>
             {
-                config.CreateMap<User, UserDTO>();                
+                config.CreateMap<User, UserDTO>();
+                config.CreateMap<CreateGroupViewModel, Group>()
+                    .ForMember(dest => dest.Name, src => src.MapFrom(x => x.GroupName));
             });
         }
     }
