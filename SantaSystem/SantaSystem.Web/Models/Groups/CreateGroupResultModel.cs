@@ -1,4 +1,6 @@
-﻿namespace SantaSystem.Web.Models.Groups
+﻿using System;
+
+namespace SantaSystem.Web.Models.Groups
 {
     public class CreateGroupResultModel
     {
@@ -6,6 +8,8 @@
 
         public string GroupName { get; set; }
 
-        public string CreatorName { get; set; }
+        public DateTime CreatedAt { get; set; }
+
+        public string CreatedBy { get; set; }
     }
 }

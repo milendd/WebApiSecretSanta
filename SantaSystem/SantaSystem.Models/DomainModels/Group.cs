@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SantaSystem.Models.DomainModels
@@ -17,5 +18,8 @@ namespace SantaSystem.Models.DomainModels
         public string CreatorId { get; set; }
 
         public virtual User Creator { get; set; }
+
+        [Required]
+        public DateTime CreatedAt { get; set; }
     }
 }

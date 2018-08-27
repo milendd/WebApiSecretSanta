@@ -6,7 +6,7 @@ using System.Web.Http;
 
 namespace SantaSystem.Web.Controllers
 {
-    public class BaseAuthApiController : ApiController
+    public abstract class BaseAuthApiController : ApiController
     {
         protected IGenericRepository<User> UserRepository { get; private set; }
 

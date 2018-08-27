@@ -8,6 +8,7 @@ namespace SantaSystem.Data
     public class SantaSystemDbContext : IdentityDbContext<User>
     {
         public virtual IDbSet<Group> Groups { get; set; }
+        public virtual IDbSet<Invitation> Invitations { get; set; }
 
         public SantaSystemDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
@@ -25,7 +26,14 @@ namespace SantaSystem.Data
             modelBuilder.Entity<Group>()
                 .HasRequired(c => c.Creator)
                 .WithMany(p => p.CreatedGroups)
-                .HasForeignKey(c => c.CreatorId);
+                .HasForeignKey(c => c.CreatorId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Invitation>()
+                .HasRequired(c => c.User)
+                .WithMany(p => p.Invitations)
+                .HasForeignKey(c => c.UserId)
+                .WillCascadeOnDelete(false);
 
             base.OnModelCreating(modelBuilder);
         }
