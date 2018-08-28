@@ -14,6 +14,7 @@ namespace SantaSystem.Web.Utils
                 config.CreateMap<User, UserDTO>();
                 config.CreateMap<CreateGroupViewModel, Group>()
                     .ForMember(dest => dest.Name, src => src.MapFrom(x => x.GroupName));
+                config.CreateMap<Invitation, InvitationDTO>();
             });
         }
     }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SantaSystem.Models.DTOs
+﻿namespace SantaSystem.Models.DTOs
 {
     public class UserDTO
     {

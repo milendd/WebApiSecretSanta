@@ -1,7 +1,11 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNet.Identity;
+using SantaSystem.Common;
+using SantaSystem.Common.Enums;
 using SantaSystem.Data.Repositories;
 using SantaSystem.Models.DomainModels;
+using SantaSystem.Models.DTOs;
 using SantaSystem.Web.Models;
 using SantaSystem.Web.Models.Groups;
 using System;
@@ -110,6 +114,37 @@ namespace SantaSystem.Web.Controllers
                 CreatedBy = this.GetCurrentUsername(),
             };
             return Created("", result); // TODO: url
+        }
+
+        [HttpGet]
+        [Route(nameof(ViewInvitations))]
+        public IHttpActionResult ViewInvitations(SortType? sortDate = null, int pageNumber = 1)
+        {
+            if (pageNumber < 1)
+            {
+                return BadRequest("PageNumber must be positive");
+            }
+
+            var currentUserId = User.Identity.GetUserId();
+            var invitations = this.invitationRepository.GetAll()
+                .Where(x => x.UserId == currentUserId)
+                .ProjectTo<InvitationDTO>();
+
+            if (sortDate != null)
+            {
+                invitations = sortDate == SortType.Ascending ?
+                    invitations.OrderBy(x => x.CreatedAt) :
+                    invitations.OrderByDescending(x => x.CreatedAt);
+            }
+            else
+            {
+                invitations = invitations.OrderBy(x => x.InvitationId);
+            }
+
+            int skip = (pageNumber - 1) * Globals.InvitationsPageSize;
+            invitations = invitations.Skip(skip).Take(Globals.InvitationsPageSize);
+
+            return Ok(invitations);
         }
     }
 }
