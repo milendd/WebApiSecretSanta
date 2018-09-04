@@ -5,6 +5,7 @@ using SantaSystem.Data.Repositories;
 using SantaSystem.Interfaces;
 using SantaSystem.Models.DomainModels;
 using SantaSystem.Models.DTOs;
+using System.Data.Entity;
 using System.Linq;
 
 namespace SantaSystem.Services
@@ -94,6 +95,31 @@ namespace SantaSystem.Services
         public void AddInvitation(Invitation invitation)
         {
             this.invitationRepository.Add(invitation);
+        }
+
+        public bool AcceptInvitation(string userId, int groupId)
+        {
+            var invitation = this.invitationRepository.GetAll()
+                .FirstOrDefault(x => x.UserId == userId && x.GroupId == groupId);
+            if (invitation == null)
+            {
+                return false;
+            }
+
+            var group = invitation.Group;
+            var user = invitation.User;
+
+            // Remove invitation
+            this.invitationRepository.Remove(invitation);
+            
+            // Add member to group
+            var db = this.groupRepository.GetDbContext();
+            group.Members.Add(user);
+            var item = db.Entry(group);
+            item.State = EntityState.Modified;
+
+            db.SaveChanges();
+            return true;
         }
     }
 }

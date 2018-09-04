@@ -20,5 +20,7 @@ namespace SantaSystem.Interfaces
         void AddGroup(Group group);
 
         void AddInvitation(Invitation invitation);
+
+        bool AcceptInvitation(string userId, int groupId);
     }
 }

@@ -54,5 +54,12 @@ namespace SantaSystem.Services
             var user = this.GetAll().FirstOrDefault(x => x.Username == username);
             return user;
         }
+
+        public string GetUsername(string userId)
+        {
+            var user = this.GetAll().FirstOrDefault(x => x.Id == userId);
+            string username = user?.Username;
+            return username;
+        }
     }
 }

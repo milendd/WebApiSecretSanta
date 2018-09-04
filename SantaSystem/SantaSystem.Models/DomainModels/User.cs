@@ -13,9 +13,11 @@ namespace SantaSystem.Models.DomainModels
         [StringLength(100)]
         public string DisplayName { get; set; }
         
-        public List<Group> CreatedGroups { get; set; }
+        public virtual ICollection<Group> CreatedGroups { get; set; }
 
-        public List<Invitation> Invitations { get; set; }
+        public virtual ICollection<Group> MemberOfGroups { get; set; }
+
+        public virtual ICollection<Invitation> Invitations { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User> manager, string authenticationType)
         {

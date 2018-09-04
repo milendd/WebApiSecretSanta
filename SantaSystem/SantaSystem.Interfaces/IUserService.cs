@@ -11,5 +11,7 @@ namespace SantaSystem.Interfaces
         IQueryable<UserDTO> GetUsers(string searchPhrase = null, SortType? sortDisplayName = null, int pageNumber = 1);
 
         UserDTO GetUser(string username);
+
+        string GetUsername(string userId);
     }
 }

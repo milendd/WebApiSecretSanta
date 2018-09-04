@@ -1,5 +1,10 @@
-﻿using System.Data.Entity;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
+using SantaSystem.Models.DomainModels;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace SantaSystem.Data.Repositories
 {
@@ -15,7 +20,7 @@ namespace SantaSystem.Data.Repositories
             this.dbSet = this.DbContext.Set<T>();
         }
 
-        protected SantaSystemDbContext DbContext
+        public SantaSystemDbContext DbContext
         {
             get { return dbContext ?? (dbContext = dbFactory.GetContext()); }
         }
@@ -23,6 +28,11 @@ namespace SantaSystem.Data.Repositories
         private IDbSet<T> DbSet
         {
             get { return this.dbSet; }
+        }
+
+        public IdentityDbContext<User> GetDbContext()
+        {
+            return this.DbContext;
         }
 
         public IQueryable<T> GetAll()
@@ -33,6 +43,13 @@ namespace SantaSystem.Data.Repositories
         public void Add(T item)
         {
             this.DbSet.Add(item);
+            this.DbContext.SaveChanges();
+        }
+
+        public void Remove(T item)
+        {
+            this.DbSet.Attach(item);
+            this.DbSet.Remove(item);
             this.DbContext.SaveChanges();
         }
     }

@@ -241,7 +241,6 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\BaseAuthApiController.cs" />
     <Compile Include="Controllers\GroupsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -251,6 +250,8 @@
     </Compile>
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\Groups\AcceptInvitationResultModel.cs" />
+    <Compile Include="Models\Groups\AcceptInvitationViewModel.cs" />
     <Compile Include="Models\Groups\CreateGroupResultModel.cs" />
     <Compile Include="Models\Groups\CreateGroupViewModel.cs" />
     <Compile Include="Models\Groups\SendInvitationResultModel.cs" />

@@ -35,7 +35,22 @@ namespace SantaSystem.Data
                 .HasForeignKey(c => c.UserId)
                 .WillCascadeOnDelete(false);
 
+            modelBuilder.Entity<Group>()
+                .HasMany(t => t.Members)
+                .WithMany(t => t.MemberOfGroups)
+                .Map(m =>
+                {
+                    m.ToTable("MemberGroups");
+                    m.MapLeftKey("GroupId");
+                    m.MapRightKey("UserId");
+                });
+
             base.OnModelCreating(modelBuilder);
+        }
+
+        public override int SaveChanges()
+        {
+            return base.SaveChanges();
         }
     }
 }

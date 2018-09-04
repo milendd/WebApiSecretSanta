@@ -16,14 +16,16 @@ namespace SantaSystem.Web.Controllers
 {
     [Authorize]
     [RoutePrefix("api/Groups")]
-    public class GroupsController : BaseAuthApiController
+    public class GroupsController : ApiController
     {
         private readonly IGroupService groupService;
+        private readonly IUserService userService;
 
         public GroupsController(IGroupService groupService,
-                                IUserService userService) : base(userService)
+                                IUserService userService)
         {
             this.groupService = groupService;
+            this.userService = userService;
         }
 
         [HttpPost]
@@ -44,14 +46,14 @@ namespace SantaSystem.Web.Controllers
             var group = Mapper.Map<Group>(viewModel);
             group.CreatorId = User.Identity.GetUserId();
             group.CreatedAt = DateTime.Now;
-
+            
             this.groupService.AddGroup(group);
             var result = new CreateGroupResultModel
             {
                 GroupId = group.GroupId,
                 GroupName = group.Name,
                 CreatedAt = group.CreatedAt,
-                CreatedBy = this.GetCurrentUsername(),
+                CreatedBy = User.Identity.GetUserName(),
             };
 
             return Created("", result); // TODO: url
@@ -79,7 +81,7 @@ namespace SantaSystem.Web.Controllers
                 return this.Content(HttpStatusCode.Forbidden, "You don't have permissions to send invitation to this group");
             }
             
-            var user = this.UserService.GetUser(viewModel.ToUsername);
+            var user = this.userService.GetUser(viewModel.ToUsername);
             if (user == null)
             {
                 return NotFound();
@@ -104,7 +106,7 @@ namespace SantaSystem.Web.Controllers
                 InvitationId = invitation.InvitationId,
                 GroupId = invitation.GroupId,
                 CreatedAt = invitation.CreatedAt,
-                CreatedBy = this.GetCurrentUsername(),
+                CreatedBy = user.Username,
             };
 
             return Created("", result); // TODO: url
@@ -123,6 +125,41 @@ namespace SantaSystem.Web.Controllers
             var invitations = this.groupService.GetInvitations(currentUserId, sortDate, pageNumber);
 
             return Ok(invitations);
+        }
+
+        [HttpPost]
+        [Route(nameof(AcceptInvitation))]
+        public IHttpActionResult AcceptInvitation(AcceptInvitationViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var group = this.groupService.GetGroup(viewModel.GroupName);
+            if (group == null)
+            {
+                return BadRequest("No such group");
+            }
+
+            var currentUserId = User.Identity.GetUserId();
+            var username = User.Identity.GetUserName();
+
+            var acceptedInvitation = this.groupService.AcceptInvitation(currentUserId, group.GroupId);
+            if (!acceptedInvitation)
+            {
+                string message = $"No invitation for user '{username}' in group '{group.Name}'";
+                return this.Content(HttpStatusCode.Forbidden, message);
+            }
+
+            var result = new AcceptInvitationResultModel
+            {
+                GroupId = group.GroupId,
+                GroupName = group.Name,
+                Username = username,
+            };
+
+            return Created("", result); // TODO: url
         }
     }
 }
