@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="DomainModels\Group.cs" />
     <Compile Include="DomainModels\Invitation.cs" />
+    <Compile Include="DomainModels\Link.cs" />
     <Compile Include="DomainModels\User.cs" />
     <Compile Include="DTOs\InvitationDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

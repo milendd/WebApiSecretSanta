@@ -14,7 +14,7 @@ namespace SantaSystem.Interfaces
         bool GroupExists(string groupName);
 
         Group GetGroup(string groupName);
-
+        
         bool AlreadyInvited(int groupId, string userId);
 
         void AddGroup(Group group);
@@ -22,5 +22,7 @@ namespace SantaSystem.Interfaces
         void AddInvitation(Invitation invitation);
 
         bool AcceptInvitation(string userId, int groupId);
+
+        bool RejectInvitation(string userId, int groupId);
     }
 }

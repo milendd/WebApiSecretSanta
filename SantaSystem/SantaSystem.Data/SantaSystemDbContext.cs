@@ -9,6 +9,7 @@ namespace SantaSystem.Data
     {
         public virtual IDbSet<Group> Groups { get; set; }
         public virtual IDbSet<Invitation> Invitations { get; set; }
+        public virtual IDbSet<Link> Links { get; set; }
 
         public SantaSystemDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

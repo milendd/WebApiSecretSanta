@@ -121,5 +121,19 @@ namespace SantaSystem.Services
             db.SaveChanges();
             return true;
         }
+
+        public bool RejectInvitation(string userId, int groupId)
+        {
+            var invitation = this.invitationRepository.GetAll()
+                .FirstOrDefault(x => x.UserId == userId && x.GroupId == groupId);
+            if (invitation == null)
+            {
+                return false;
+            }
+
+            // Remove invitation
+            this.invitationRepository.Remove(invitation);
+            return true;
+        }
     }
 }

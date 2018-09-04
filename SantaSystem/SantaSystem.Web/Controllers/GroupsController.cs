@@ -161,5 +161,33 @@ namespace SantaSystem.Web.Controllers
 
             return Created("", result); // TODO: url
         }
+
+        [HttpDelete]
+        [Route(nameof(RejectInvitation))]
+        public IHttpActionResult RejectInvitation(RejectInvitationViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var group = this.groupService.GetGroup(viewModel.GroupName);
+            if (group == null)
+            {
+                return this.Content(HttpStatusCode.NotFound, "No such group");
+            }
+
+            var currentUserId = User.Identity.GetUserId();
+            var username = User.Identity.GetUserName();
+
+            var rejectedInvitation = this.groupService.RejectInvitation(currentUserId, group.GroupId);
+            if (!rejectedInvitation)
+            {
+                string message = $"No invitation for user '{username}' in group '{group.Name}'";
+                return this.Content(HttpStatusCode.NotFound, message);
+            }
+            
+            return this.Content(HttpStatusCode.NoContent, "");
+        }
     }
 }
