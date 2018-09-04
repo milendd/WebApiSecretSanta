@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SantaSystem.Data.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private IDbSet<T> dbSet;
+        private readonly IDbSet<T> dbSet;
         private SantaSystemDbContext dbContext;
         private IDbFactory dbFactory { get; set; }
         

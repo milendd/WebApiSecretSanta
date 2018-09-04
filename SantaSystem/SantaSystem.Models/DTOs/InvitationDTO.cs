@@ -7,8 +7,10 @@ namespace SantaSystem.Models.DTOs
         public int InvitationId { get; set; }
         
         public int GroupId { get; set; }
-        
-        public string UserId { get; set; }
+
+        public string GroupName { get; set; }
+
+        public string Username { get; set; }
 
         public DateTime CreatedAt { get; set; }
     }

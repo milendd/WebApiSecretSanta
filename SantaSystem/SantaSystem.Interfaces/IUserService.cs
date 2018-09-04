@@ -1,10 +1,15 @@
-﻿using SantaSystem.Models.DomainModels;
+﻿using SantaSystem.Common.Enums;
+using SantaSystem.Models.DTOs;
 using System.Linq;
 
 namespace SantaSystem.Interfaces
 {
     public interface IUserService
     {
-        IQueryable<User> GetAll();
+        IQueryable<UserDTO> GetAll();
+
+        IQueryable<UserDTO> GetUsers(string searchPhrase = null, SortType? sortDisplayName = null, int pageNumber = 1);
+
+        UserDTO GetUser(string username);
     }
 }

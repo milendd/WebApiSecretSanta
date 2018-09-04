@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
-using SantaSystem.Data.Repositories;
-using SantaSystem.Models.DomainModels;
+using SantaSystem.Interfaces;
 using System.Linq;
 using System.Web.Http;
 
@@ -8,18 +7,18 @@ namespace SantaSystem.Web.Controllers
 {
     public abstract class BaseAuthApiController : ApiController
     {
-        protected IGenericRepository<User> UserRepository { get; private set; }
+        protected IUserService UserService { get; private set; }
 
-        public BaseAuthApiController(IGenericRepository<User> userRepository)
+        public BaseAuthApiController(IUserService userService)
         {
-            this.UserRepository = userRepository;
+            this.UserService = userService;
         }
 
         protected string GetCurrentUsername()
         {
             var userId = User.Identity.GetUserId();
-            var user = this.UserRepository.GetAll().FirstOrDefault(x => x.Id == userId);
-            return user?.UserName;
+            var user = this.UserService.GetAll().FirstOrDefault(x => x.Id == userId);
+            return user?.Username;
         }
     }
 }

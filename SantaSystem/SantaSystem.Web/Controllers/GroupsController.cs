@@ -3,7 +3,7 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.AspNet.Identity;
 using SantaSystem.Common;
 using SantaSystem.Common.Enums;
-using SantaSystem.Data.Repositories;
+using SantaSystem.Interfaces;
 using SantaSystem.Models.DomainModels;
 using SantaSystem.Models.DTOs;
 using SantaSystem.Web.Models.Groups;
@@ -18,16 +18,12 @@ namespace SantaSystem.Web.Controllers
     [RoutePrefix("api/Groups")]
     public class GroupsController : BaseAuthApiController
     {
-        // TODO: change to service
-        private readonly IGenericRepository<Group> groupRepository;
-        private readonly IGenericRepository<Invitation> invitationRepository;
+        private readonly IGroupService groupService;
 
-        public GroupsController(IGenericRepository<Group> groupRepository,
-                                IGenericRepository<Invitation> invitationRepository,
-                                IGenericRepository<User> userRepository) : base(userRepository)
+        public GroupsController(IGroupService groupService,
+                                IUserService userService) : base(userService)
         {
-            this.groupRepository = groupRepository;
-            this.invitationRepository = invitationRepository;
+            this.groupService = groupService;
         }
 
         [HttpPost]
@@ -39,7 +35,7 @@ namespace SantaSystem.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            bool groupExists = this.groupRepository.GetAll().Any(x => x.Name == viewModel.GroupName);
+            bool groupExists = this.groupService.GroupExists(viewModel.GroupName);
             if (groupExists)
             {
                 return Conflict();
@@ -49,8 +45,7 @@ namespace SantaSystem.Web.Controllers
             group.CreatorId = User.Identity.GetUserId();
             group.CreatedAt = DateTime.Now;
 
-            this.groupRepository.Add(group);
-
+            this.groupService.AddGroup(group);
             var result = new CreateGroupResultModel
             {
                 GroupId = group.GroupId,
@@ -71,7 +66,7 @@ namespace SantaSystem.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            var group = this.groupRepository.GetAll().FirstOrDefault(x => x.Name == viewModel.GroupName);
+            var group = this.groupService.GetGroup(viewModel.GroupName);
             if (group == null)
             {
                 return NotFound();
@@ -84,14 +79,13 @@ namespace SantaSystem.Web.Controllers
                 return this.Content(HttpStatusCode.Forbidden, "You don't have permissions to send invitation to this group");
             }
             
-            var user = this.UserRepository.GetAll().FirstOrDefault(x => x.UserName == viewModel.ToUsername);
+            var user = this.UserService.GetUser(viewModel.ToUsername);
             if (user == null)
             {
                 return NotFound();
             }
 
-            var alreadyInvited = this.invitationRepository.GetAll()
-                .Any(x => x.GroupId == group.GroupId && x.UserId == user.Id);
+            var alreadyInvited = this.groupService.AlreadyInvited(group.GroupId, user.Id);
             if (alreadyInvited)
             {
                 return Conflict();
@@ -104,8 +98,7 @@ namespace SantaSystem.Web.Controllers
                 CreatedAt = DateTime.Now,
             };
 
-            this.invitationRepository.Add(invitation);
-            
+            this.groupService.AddInvitation(invitation);
             var result = new SendInvitationResultModel
             {
                 InvitationId = invitation.InvitationId,
@@ -113,6 +106,7 @@ namespace SantaSystem.Web.Controllers
                 CreatedAt = invitation.CreatedAt,
                 CreatedBy = this.GetCurrentUsername(),
             };
+
             return Created("", result); // TODO: url
         }
 
@@ -126,23 +120,7 @@ namespace SantaSystem.Web.Controllers
             }
 
             var currentUserId = User.Identity.GetUserId();
-            var invitations = this.invitationRepository.GetAll()
-                .Where(x => x.UserId == currentUserId)
-                .ProjectTo<InvitationDTO>();
-
-            if (sortDate != null)
-            {
-                invitations = sortDate == SortType.Ascending ?
-                    invitations.OrderBy(x => x.CreatedAt) :
-                    invitations.OrderByDescending(x => x.CreatedAt);
-            }
-            else
-            {
-                invitations = invitations.OrderBy(x => x.InvitationId);
-            }
-
-            int skip = (pageNumber - 1) * Globals.InvitationsPageSize;
-            invitations = invitations.Skip(skip).Take(Globals.InvitationsPageSize);
+            var invitations = this.groupService.GetInvitations(currentUserId, sortDate, pageNumber);
 
             return Ok(invitations);
         }
