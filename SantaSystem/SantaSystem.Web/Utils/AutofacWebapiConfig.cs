@@ -5,6 +5,7 @@ using SantaSystem.Data.Repositories;
 using System.Data.Entity;
 using System.Reflection;
 using System.Web.Http;
+using System.Linq;
 
 namespace SantaSystem.Web.Utils
 {
@@ -35,14 +36,31 @@ namespace SantaSystem.Web.Utils
                    .As<IDbFactory>()
                    .InstancePerRequest();
             
-            builder.RegisterGeneric(typeof(GenericRepository<>))
-                   .As(typeof(IGenericRepository<>))
-                   .InstancePerRequest();
-            
+            RegisterRepositories(builder);
+
             //Set the dependency resolver to be Autofac.  
             container = builder.Build();
 
             return container;
+        }
+
+        private static void RegisterRepositories(ContainerBuilder builder)
+        {
+            var repositoryAssembly = Assembly.GetAssembly(typeof(GenericRepository<>));
+            var types = repositoryAssembly.GetTypes()
+                .Where(x => x.IsClass && x.IsPublic && x.IsGenericType && x.GetInterfaces()?.Length > 0)
+                .Where(x => x.Name.Contains("Repository"))
+                .Select(x => new
+                {
+                    Type = x,
+                    Interface = x.GetInterfaces().FirstOrDefault()
+                })
+                .ToList();
+
+            types.ForEach(x =>
+            {
+                builder.RegisterGeneric(x.Type).As(x.Interface).InstancePerRequest();
+            });
         }
     }
 }
