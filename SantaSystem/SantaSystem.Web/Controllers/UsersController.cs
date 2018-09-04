@@ -1,8 +1,7 @@
 ﻿using AutoMapper.QueryableExtensions;
 using SantaSystem.Common;
 using SantaSystem.Common.Enums;
-using SantaSystem.Data.Repositories;
-using SantaSystem.Models.DomainModels;
+using SantaSystem.Interfaces;
 using SantaSystem.Models.DTOs;
 using System.Linq;
 using System.Web.Http;
@@ -13,11 +12,11 @@ namespace SantaSystem.Web.Controllers
     [RoutePrefix("api/Users")]
     public class UsersController : ApiController
     {
-        private readonly IGenericRepository<User> userRepository;
+        private readonly IUserService userService;
 
-        public UsersController(IGenericRepository<User> userRepository)
+        public UsersController(IUserService userService)
         {
-            this.userRepository = userRepository;
+            this.userService = userService;
         }
         
         [Route(nameof(GetUsers))]
@@ -28,7 +27,7 @@ namespace SantaSystem.Web.Controllers
                 return BadRequest("PageNumber must be positive");
             }
 
-            var users = this.userRepository.GetAll().ProjectTo<UserDTO>();
+            var users = this.userService.GetAll().ProjectTo<UserDTO>();
             if (!string.IsNullOrEmpty(searchPhrase))
             {
                 users = users.Where(x => x.DisplayName.Contains(searchPhrase));
@@ -59,7 +58,7 @@ namespace SantaSystem.Web.Controllers
                 return BadRequest("Username is required");
             }
 
-            var user = this.userRepository.GetAll().FirstOrDefault(x => x.UserName == username);
+            var user = this.userService.GetAll().FirstOrDefault(x => x.UserName == username);
 
             if (user == null)
             {

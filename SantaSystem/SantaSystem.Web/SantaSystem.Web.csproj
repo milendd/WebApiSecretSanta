@@ -340,9 +340,17 @@
       <Project>{4b873d10-8895-473c-a0d0-34d23bfd39bf}</Project>
       <Name>SantaSystem.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SantaSystem.Interfaces\SantaSystem.Interfaces.csproj">
+      <Project>{eebaa1c1-c985-4487-b9d6-7c8cf37aaa15}</Project>
+      <Name>SantaSystem.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SantaSystem.Models\SantaSystem.Models.csproj">
       <Project>{8b1a04e1-86d4-4d9a-8ed7-8dd9da83fe52}</Project>
       <Name>SantaSystem.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SantaSystem.Services\SantaSystem.Services.csproj">
+      <Project>{BDCDEC21-17D9-42BE-9FE7-4B078BE92D3F}</Project>
+      <Name>SantaSystem.Services</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

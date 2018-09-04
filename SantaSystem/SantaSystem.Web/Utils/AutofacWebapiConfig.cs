@@ -6,6 +6,8 @@ using System.Data.Entity;
 using System.Reflection;
 using System.Web.Http;
 using System.Linq;
+using SantaSystem.Services;
+using SantaSystem.Interfaces;
 
 namespace SantaSystem.Web.Utils
 {
@@ -61,6 +63,14 @@ namespace SantaSystem.Web.Utils
             {
                 builder.RegisterGeneric(x.Type).As(x.Interface).InstancePerRequest();
             });
+
+            Assembly servicesAssembly = Assembly.GetAssembly(typeof(UserService));
+            Assembly interfacesAssembly = Assembly.GetAssembly(typeof(IUserService));
+            Assembly[] arr = { servicesAssembly, interfacesAssembly };
+            builder.RegisterAssemblyTypes(arr)
+                .Where(t => t.Name.EndsWith("Service"))
+                .AsImplementedInterfaces()
+                .InstancePerRequest();
         }
     }
 }

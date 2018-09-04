@@ -6,7 +6,6 @@ using SantaSystem.Common.Enums;
 using SantaSystem.Data.Repositories;
 using SantaSystem.Models.DomainModels;
 using SantaSystem.Models.DTOs;
-using SantaSystem.Web.Models;
 using SantaSystem.Web.Models.Groups;
 using System;
 using System.Linq;
@@ -19,6 +18,7 @@ namespace SantaSystem.Web.Controllers
     [RoutePrefix("api/Groups")]
     public class GroupsController : BaseAuthApiController
     {
+        // TODO: change to service
         private readonly IGenericRepository<Group> groupRepository;
         private readonly IGenericRepository<Invitation> invitationRepository;
 
