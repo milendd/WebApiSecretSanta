@@ -14,12 +14,15 @@ namespace SantaSystem.Services
     {
         private readonly IGenericRepository<Link> linkRepository;
         private readonly IGenericRepository<Group> groupRepository;
+        private readonly IGenericRepository<User> userRepository;
 
         public LinkService(IGenericRepository<Link> linkRepository,
-                           IGenericRepository<Group> groupRepository)
+                           IGenericRepository<Group> groupRepository,
+                           IGenericRepository<User> userRepository)
         {
             this.linkRepository = linkRepository;
             this.groupRepository = groupRepository;
+            this.userRepository = userRepository;
         }
 
         public IQueryable<Link> GetLinks(int groupId)
@@ -69,6 +72,26 @@ namespace SantaSystem.Services
             }
 
             db.SaveChanges();
+        }
+
+        public string CheckLinkStarted(string userId, string groupName)
+        {
+            var group = this.groupRepository.GetAll().FirstOrDefault(x => x.Name == groupName);
+            if (group == null)
+            {
+                return null;
+            }
+
+            var link = this.linkRepository.GetAll()
+                .FirstOrDefault(x => x.MemberFromId == userId && x.GroupId == group.GroupId);
+
+            if (link == null)
+            {
+                return null;
+            }
+
+            var result = link.MemberTo?.UserName;
+            return result;
         }
     }
 }

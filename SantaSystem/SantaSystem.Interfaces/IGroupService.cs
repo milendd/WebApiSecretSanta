@@ -24,5 +24,7 @@ namespace SantaSystem.Interfaces
         bool AcceptInvitation(string userId, int groupId);
 
         bool RejectInvitation(string userId, int groupId);
+
+        IQueryable<GroupDTO> GetPersonalGroups(string userId, int pageNumber);
     }
 }

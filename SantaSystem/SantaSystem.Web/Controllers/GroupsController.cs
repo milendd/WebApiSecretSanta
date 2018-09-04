@@ -189,5 +189,19 @@ namespace SantaSystem.Web.Controllers
             
             return this.Content(HttpStatusCode.NoContent, "");
         }
+
+        [HttpGet]
+        [Route(nameof(GetPersonalGroups))]
+        public IHttpActionResult GetPersonalGroups(int pageNumber = 1)
+        {
+            if (pageNumber < 1)
+            {
+                return BadRequest("PageNumber must be positive");
+            }
+
+            var currentUserId = User.Identity.GetUserId();
+            var groups = this.groupService.GetPersonalGroups(currentUserId, pageNumber);
+            return Ok(groups);
+        }
     }
 }

@@ -135,5 +135,24 @@ namespace SantaSystem.Services
             this.invitationRepository.Remove(invitation);
             return true;
         }
+
+        public IQueryable<GroupDTO> GetPersonalGroups(string userId, int pageNumber)
+        {
+            var db = this.groupRepository.GetDbContext();
+
+            var groups = db.Set<Group>().Include(x => x.Members)
+                .OrderBy(x => x.Name)
+                .Select(x => new GroupDTO
+                {
+                    GroupId = x.GroupId,
+                    GroupName = x.Name,
+                    Members = x.CreatorId == userId ? x.Members.Select(m => m.UserName) : null,
+                });
+
+            int skip = (pageNumber - 1) * Globals.GroupsPageSize;
+            groups = groups.Skip(skip).Take(Globals.GroupsPageSize);
+
+            return groups;
+        }
     }
 }

@@ -8,5 +8,7 @@ namespace SantaSystem.Interfaces
         IQueryable<Link> GetLinks(int groupId);
 
         void StartLink(int groupId);
+
+        string CheckLinkStarted(string userId, string groupName);
     }
 }

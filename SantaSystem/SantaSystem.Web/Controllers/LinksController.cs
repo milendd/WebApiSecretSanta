@@ -61,5 +61,24 @@ namespace SantaSystem.Web.Controllers
             this.linkService.StartLink(group.GroupId);
             return Created("", ""); // TODO: no url and no body
         }
+
+        [HttpGet]
+        [Route(nameof(IsLinkStarted))]
+        public IHttpActionResult IsLinkStarted(string groupName)
+        {
+            if (string.IsNullOrEmpty(groupName))
+            {
+                return BadRequest("Group name cannot be empty");
+            }
+
+            string currentUserId = User.Identity.GetUserId();
+            string receiver = this.linkService.CheckLinkStarted(currentUserId, groupName);
+            if (string.IsNullOrEmpty(receiver))
+            {
+                return NotFound();
+            }
+
+            return Ok(new { Receiver = receiver });
+        }
     }
 }
